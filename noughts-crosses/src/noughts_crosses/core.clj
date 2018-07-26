@@ -1,22 +1,33 @@
 (ns noughts-crosses.core
   (:gen-class))
 
-(defn -main
-  "I don't do a whole lot ... yet."
-  [& args]
-  (println "Hello World!"))
+(type :X)
+(type :O)
+(type :-)
+
+(defn initial-grid
+  []
+  [:- :- :-])
 
 (defn free?
-  [moves pos]
-  (not (.contains moves pos)))
+  [grid pos]
+  (= :- (nth grid pos)))
 
 (defn in-range?
   [pos]
   (<= 0 pos 2))
 
-;; play function takes a move, validates it and returns an updates list of moves
-(defn play
-  [moves move]
-  (if (and (free? moves move) (in-range? move))
-    (conj moves move)
-    (throw (IllegalArgumentException. "Illegal move"))))
+(defn move
+  [grid pos plyr]
+  (if (and (in-range? pos) (free? grid pos))
+    (map-indexed (fn [idx itm] (if (= idx pos) plyr itm)) grid)
+    (throw (IllegalArgumentException. "Move must be in the range 0..2 and refer to a free position on the grid"))))
+
+(defn winner
+  [grid plyr]
+  (= (count grid) (count (filter (#(= % plyr) grid)))))
+
+(defn play-fn
+  []
+  (let [grid (atom (initial-grid))]
+    (fn [pos plyr] (do (swap! grid move pos plyr)))))
