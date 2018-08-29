@@ -12,18 +12,31 @@
          (= :- (nth grid pos))]}
   (assoc grid pos player))
 
+(defn- grid-width
+  [square-grid]
+  (math/sqrt (count square-grid)))
 
+(defn- winning-line?
+  [idxs grid player]
+  (every? #(= player (nth grid %)) idxs))
+
+; refactor this to use idxs rather than grid elements then can reuse last 3 steps from vertical
 (defn- winner-horizontal?
   [grid player]
-  (as-> grid g
-        (partition-all (math/sqrt (count g)) g)
-        (map #(every? #{player} %) g)                    ;
-        (some true? g)
-        (true? g)))
+  (let [grid-width (grid-width grid)]
+    (->> (partition-all grid-width grid)
+         (map #(every? #{player} %))
+         (some true?)
+         (true?))))
 
 (defn- winner-vertical?
   [grid player]
-  false)
+  (let [grid-width (grid-width grid)]
+    (->> (range 0 grid-width)
+         (map #(range % (count grid) grid-width))
+         (map #(winning-line? % grid player))
+         (some true?)
+         (true?))))
 
 (defn- winner-diagonal?
   [grid player]

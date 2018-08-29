@@ -12,7 +12,7 @@
               :- :-] (move grid 0 :O)))
       (is (thrown? AssertionError (move grid 0 :Y))))))
 
-(deftest move-test
+(deftest horizontal-win-test
   (testing "Play game and check X wins and O loses"
     (let [grid
           (-> [:- :- :-
@@ -24,6 +24,38 @@
       (is (= [:X :X :X
               :- :- :-
               :- :- :-] grid))
+      (is (true? (winner? grid :X)))
+      (is (false? (winner? grid :O))))))
+
+
+(deftest vertical-win-test
+  (testing "Play game and check X wins and O loses"
+    (let [grid
+          (-> [:- :- :-
+               :- :- :-
+               :- :- :-]
+              (move 1 :X)
+              (move 4 :X)
+              (move 7 :X))]
+      (is (= [:- :X :-
+              :- :X :-
+              :- :X :-] grid))
+      (is (true? (winner? grid :X)))
+      (is (false? (winner? grid :O))))))
+
+
+(deftest diagonal-win-test
+  (testing "Play game and check X wins and O loses"
+    (let [grid
+          (-> [:- :- :-
+               :- :- :-
+               :- :- :-]
+              (move 0 :X)
+              (move 4 :X)
+              (move 8 :X))]
+      (is (= [:X :- :-
+              :- :X :-
+              :- :- :X] grid))
       (is (true? (winner? grid :X)))
       (is (false? (winner? grid :O))))))
 
