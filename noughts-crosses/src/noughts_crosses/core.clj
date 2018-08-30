@@ -43,7 +43,11 @@
 
 (defn- winner-diagonal?
   [grid player]
-  false)
+  (let [grid-count (count grid)
+        grid-width (grid-width grid)
+        diagonal-lr-idxs (range 0 grid-count (+ grid-width 1))
+        diagonal-rl-idxs (range (- grid-width 1) (- grid-count 1) (- grid-width 1))]
+    (winning-line? grid player (list diagonal-lr-idxs diagonal-rl-idxs))))
 
 (defn winner?
   [grid player]

@@ -44,7 +44,7 @@
       (is (false? (winner? grid :O))))))
 
 
-(deftest diagonal-win-test
+(deftest diagonal-win-lr-test
   (testing "Play game and check X wins and O loses"
     (let [grid
           (-> [:- :- :-
@@ -56,6 +56,21 @@
       (is (= [:X :- :-
               :- :X :-
               :- :- :X] grid))
+      (is (true? (winner? grid :X)))
+      (is (false? (winner? grid :O))))))
+
+(deftest diagonal-win-rl-test
+  (testing "Play game and check X wins and O loses"
+    (let [grid
+          (-> [:- :- :-
+               :- :- :-
+               :- :- :-]
+              (move 2 :X)
+              (move 4 :X)
+              (move 6 :X))]
+      (is (= [:- :- :X
+              :- :X :-
+              :X :- :-] grid))
       (is (true? (winner? grid :X)))
       (is (false? (winner? grid :O))))))
 
